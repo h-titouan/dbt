@@ -258,7 +258,7 @@ Tu peux maintenant explorer davantage les fonctionnalités de DBT, comme les **m
 
 ## Sources 
 
-Voici les sources qui ont été utilisés pour rédiger ce tutoriel : 
+Voici les sources qui ont été utilisées pour rédiger ce tutoriel : 
 
 - La documentation interne de Seenovate  
 - La documentation officielle de [**DBT**](https://docs.getdbt.com/guides)  
