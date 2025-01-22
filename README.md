@@ -1,6 +1,6 @@
 # Tutoriel dbt (data build tool)
 
-## 1 Qu'est-ce que DBT ?
+## 1. Qu'est-ce que DBT ?
 DBT (Data Build Tool) est un outil conçu pour transformer des données dans un entrepôt de données (data warehouse) en suivant une approche ELT (Extract-Load-Transform), ce qui représente un fonctionnement différents des traditionnelles ETL, où les données sont transformées avant d'être chargées dans un entrepôt. DBT lui, transforme les données directement dans l'entrepôt. Cela a pour objectif de rendre les données plus facilement accessible et utilisables.
 
 ### Concepts clés :
@@ -42,7 +42,7 @@ Une fois **PostgreSQL** installé, tape ceci dans ton terminal pour vérifier sa
 Ouvre un terminal pour se connecter à **PostgreSQL** avec la commande suivante : `psql -u postgres`  
 
 Une fois connecté, exécute les commandes suivantes : `CREATE DATABASE dbt_learning;`  
-*Cela crée une base de données appelée **dbt_learning** *    
+*Cela crée une base de données appelée **dbt_learning***    
 Vérifie que la base à bien été créée avec la commande suivante : `\l`   
 *Cela va lister les bases de données*    
 
@@ -62,7 +62,7 @@ VALUES
     ('Bob', '2022-12-15'),
     ('Charlie', '2021-05-20');
 ```
-Nous avons ajouté une table de 3 colonnes avec un ID, un nom et une date de création. On peut vérifier que tout à fonctionné avec la commande suivvante : `SELECT * FROM raw_data.users;`
+Nous avons ajouté une table de 3 colonnes avec un ID, un nom et une date de création. On peut vérifier que tout à fonctionné avec la commande suivante : `SELECT * FROM raw_data.users;`
 
 Dès lors, on peut configurer **DBT** avec **PostgreSQL**
 
@@ -255,3 +255,13 @@ Quelques bonnes pratiques à retenir :
 **Documentation** : Génère et publie la documentation pour rendre ton projet plus compréhensible.  
 
 Tu peux maintenant explorer davantage les fonctionnalités de DBT, comme les **macros** pour réutiliser du code SQL, les **hooks** pour automatiser des processus avant ou après les exécutions de modèle ou encore les **snapshots** pour historiser les différentes versions. Enfin, **DBT** permet de développer un projet *CI/CD* avec *Git* n'hésites pas à explorer ce domaine !
+
+## Sources 
+
+Voici les sources qui ont été utilisés pour rédiger ce tutoriel : 
+
+- La documentation interne de Seenovate  
+- La documentation officielle de [**DBT**](https://docs.getdbt.com/guides)  
+- Introduction à dbt : [L'outil de construction de données](https://www.youtube.com/watch?v=7ovpDjDJs6w)  
+- Introduction to dbt : [Step by Step Guide for Beginners](https://rasiksuhail.medium.com/introduction-to-dbt-step-by-step-instructions-for-beginners-a16d343c8826)  
+- La documentation de **Snowflake** : [Data Engineering with Snowpark Python and dbt](https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_and_dbt/index.html#0)  
