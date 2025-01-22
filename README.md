@@ -4,13 +4,13 @@
 DBT (Data Build Tool) est un outil conçu pour transformer des données dans un entrepôt de données (data warehouse) en suivant une approche ELT (Extract-Load-Transform), ce qui représente un fonctionnement différents des traditionnelles ETL, où les données sont transformées avant d'être chargées dans un entrepôt. DBT lui, transforme les données directement dans l'entrepôt. Cela a pour objectif de rendre les données plus facilement accessible et utilisables.
 
 ### Concepts clés :
-- Voici les concepts clés de dbt qui seront abordés dans ce tutoriel :   
-**Modèles** : Des fichiers SQL dans lesquels on définis des requêtes pour la transformation des données.  
-**Tests** : Permet de faire des vérifications automatiques pour garantir la qualité des données (exemple : unicité, non-nullité).  
-**Documentation** : Un des avatanges de DBT est qu'il génère une documentation interactive à partir du code.  
-**Snapshots** : Ce sont des fonctionnalités pour capturer des versions historisées des données.  
-**Macros** : Elles permettent de réutiliser du code dans certaines situations et sont écrites en *Jinja* (un moteur de templates).  
-**Ecosystème** : DBT s'intègre avec des entrepôts de données tels que *Snowflake*, *BigQuery*, *Redshift*, et *PostgreSQL*.  
+Voici les concepts clés de dbt qui seront abordés dans ce tutoriel :   
+- **Modèles** : Des fichiers SQL dans lesquels on définis des requêtes pour la transformation des données.  
+- **Tests** : Permet de faire des vérifications automatiques pour garantir la qualité des données (exemple : unicité, non-nullité).  
+- **Documentation** : Un des avatanges de DBT est qu'il génère une documentation interactive à partir du code.  
+- **Snapshots** : Ce sont des fonctionnalités pour capturer des versions historisées des données.  
+- **Macros** : Elles permettent de réutiliser du code dans certaines situations et sont écrites en *Jinja* (un moteur de templates).  
+- **Ecosystème** : DBT s'intègre avec des entrepôts de données tels que *Snowflake*, *BigQuery*, *Redshift*, et *PostgreSQL*.  
 
 ## 1.1 Installer et configurer DBT
 
@@ -50,7 +50,7 @@ Vérifie que la base à bien été créée avec la commande suivante : `\l`
 
 Dès lors, on peut configurer **DBT** avec **PostgreSQL**
 
-### 1.2.4 Créer le fichier profiles.yml
+### 1.2.3 Créer le fichier profiles.yml
 
 Dans le dossier utilisateur de ton ordinateur, un dossier **.dbt** doit apparaître.  
 On va alors ajouter le fichier **profiles.yml** dans ce dossier.   
@@ -70,7 +70,7 @@ dbt_postgres_project:
       schema: public
 ```
 
-### 1.2.5 Tester la connexion 
+### 1.2.4 Tester la connexion 
 
 Lance la commande suivante dans le terminal pour vérifier la connexion entre **DBT** et **PostgreSQL** : `dbt debug`  
 *Si tout est correctement configuré tu devrais voir des messages indiquant que la connexion est réussie*  
