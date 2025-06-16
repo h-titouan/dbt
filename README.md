@@ -1,6 +1,6 @@
 # Tutoriel dbt (data build tool)
 
-![Image DBT]([docs/images/dbt_architecture.png](https://www.google.com/imgres?q=dbt&imgurl=https%3A%2F%2F21707327.fs1.hubspotusercontent-na1.net%2Fhubfs%2F21707327%2FDbt.png&imgrefurl=https%3A%2F%2Fwww.sbi-group.com%2Ffr%2Fpartenaires%2Fdbt&docid=At6bvDYhBuKooM&tbnid=GsQkbareKFu9LM&vet=12ahUKEwis7P6-pvaNAxU7vicCHbfoC-8QM3oECB4QAA..i&w=3000&h=2059&hcb=2&ved=2ahUKEwis7P6-pvaNAxU7vicCHbfoC-8QM3oECB4QAA))
+![Image DBT]((https://www.google.com/imgres?q=dbt&imgurl=https%3A%2F%2F21707327.fs1.hubspotusercontent-na1.net%2Fhubfs%2F21707327%2FDbt.png&imgrefurl=https%3A%2F%2Fwww.sbi-group.com%2Ffr%2Fpartenaires%2Fdbt&docid=At6bvDYhBuKooM&tbnid=GsQkbareKFu9LM&vet=12ahUKEwis7P6-pvaNAxU7vicCHbfoC-8QM3oECB4QAA..i&w=3000&h=2059&hcb=2&ved=2ahUKEwis7P6-pvaNAxU7vicCHbfoC-8QM3oECB4QAA)
 
 ## Table des matières
 
