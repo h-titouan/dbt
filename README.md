@@ -1,5 +1,39 @@
 # Tutoriel dbt (data build tool)
 
+![Image DBT]([docs/images/dbt_architecture.png](https://www.google.com/imgres?q=dbt&imgurl=https%3A%2F%2F21707327.fs1.hubspotusercontent-na1.net%2Fhubfs%2F21707327%2FDbt.png&imgrefurl=https%3A%2F%2Fwww.sbi-group.com%2Ffr%2Fpartenaires%2Fdbt&docid=At6bvDYhBuKooM&tbnid=GsQkbareKFu9LM&vet=12ahUKEwis7P6-pvaNAxU7vicCHbfoC-8QM3oECB4QAA..i&w=3000&h=2059&hcb=2&ved=2ahUKEwis7P6-pvaNAxU7vicCHbfoC-8QM3oECB4QAA))
+
+## Table des matières
+
+- [1. Qu'est-ce que DBT ?](#1-quest-ce-que-dbt-)
+- [1.1 Installer et configurer DBT](#11-installer-et-configurer-dbt)
+- [1.2 Configurer DBT avec ton entrepôt de données](#12-configurer-dbt-avec-ton-entrepôt-de-données)
+  - [1.2.1 Installation de PostgreSQL](#121-installation-de-postgresql)
+  - [1.2.2 Créer une base de données pour DBT](#122-créer-une-base-de-données-pour-dbt)
+  - [1.2.3 Créer le fichier profilesyml](#123-créer-le-fichier-profilesyml)
+  - [1.2.4 Tester la connexion](#124-tester-la-connexion)
+- [1.3 Initialiser un projet DBT](#13-initialiser-un-projet-dbt)
+- [1.4 Préparer un modèle](#14-préparer-un-modèle)
+- [1.5 Exécuter et tester ton modèle](#15-exécuter-et-tester-ton-modèle)
+- [2. Développer des modèles dans DBT](#2-développer-des-modèles-dans-dbt)
+  - [2.1 Structure des fichiers DBT](#21-structure-des-fichiers-dbt)
+  - [2.2 Utilisation des sources DBT](#22-utilisation-des-sources-dbt)
+  - [2.3 Utilisation des tests DBT](#23-utilisation-des-tests-dbt)
+    - [2.3.1 Les différents types de tests](#231-les-différents-types-de-tests)
+    - [2.3.2 Lancer un test](#232-lancer-un-test)
+- [3. Utilisation des variables dans DBT](#3-utilisation-des-variables-dans-dbt)
+  - [3.1 Définir une variable dans le fichier dbt_project.yml](#31-définir-une-variable-dans-le-fichier-dbt_projectyml)
+  - [3.2 Utiliser une variable dans un modèle SQL](#32-utiliser-une-variable-dans-un-modèle-sql)
+  - [3.3 Redéfinir une variable depuis la ligne de commande](#33-redéfinir-une-variable-depuis-la-ligne-de-commande)
+  - [3.4 Utilisation avancée : variables conditionnelles](#34-utilisation-avancée--variables-conditionnelles)
+  - [3.5 Définir dynamiquement un schéma ou un nom de table avec des variables](#35-définir-dynamiquement-un-schéma-ou-un-nom-de-table-avec-des-variables)
+- [4. Utiliser les macros dans DBT](#4-utiliser-les-macros-dans-dbt)
+  - [4.1 Built-in macros (macros intégrées)](#41-built-in-macros-macros-intégrées)
+  - [4.2 Créer des custom macros](#42-créer-des-custom-macros)
+  - [4.3 Utiliser des macros dans des boucles et conditions](#43-utiliser-des-macros-dans-des-boucles-et-conditions)
+  - [4.4 Le package dbt_utils](#44-le-package-dbt_utils)
+- [5. Les commandes utiles à DBT](#5-les-commandes-utiles-à-dbt)
+- [6. Documentation DBT](#6-documentation-dbt)
+
 ## 1. Qu'est-ce que DBT ?
 DBT (Data Build Tool) est un outil conçu pour transformer des données dans un entrepôt de données (data warehouse) en suivant une approche ELT (Extract-Load-Transform), ce qui représente un fonctionnement différents des traditionnelles ETL, où les données sont transformées avant d'être chargées dans un entrepôt. DBT lui, transforme les données directement dans l'entrepôt. Cela a pour objectif de rendre les données plus facilement accessible et utilisables.
 
@@ -213,7 +247,243 @@ models:
 
 Une fois les tests définis, tu peux les exécuter avec les commandes : `dbt run` pour lancer les modèles puis `dbt test` pour lancer les tests.
 
-## 3. Les commandes utiles à DBT
+## 3. Utilisation des variables dans DBT
+
+Dans un projet **DBT**, il est possible d'utiliser des **variables personnalisées** pour rendre tes modèles plus dynamiques et configurables. Ces variables sont définies dans le fichier `dbt_project.yml` ou passées en ligne de commande, puis utilisées dans les modèles SQL avec la fonction `var()`.
+
+### 3.1 Définir une variable dans le fichier `dbt_project.yml`
+
+Tu peux définir des variables globales dans la section `vars:` du fichier `dbt_project.yml`.
+
+Par exemple :
+```yaml
+# dbt_project.yml
+name: my_first_project
+version: '1.0'
+config-version: 2
+
+vars:
+  date_limite: '2022-01-01'
+```
+
+Ici, on définit une variable `date_limite` contenant une date en texte.
+
+### 3.2 Utiliser une variable dans un modèle SQL
+
+Une fois définie, tu peux réutiliser cette variable dans un modèle grâce à la fonction `var()` de Jinja :
+
+```sql
+-- models/transform_users_variable.sql
+SELECT 
+    id,
+    name,
+    created_at
+FROM {{ source('raw_data', 'users') }}
+WHERE created_at > '{{ var("date_limite") }}'
+```
+
+⚠️ **Attention** : la fonction `var()` retourne une chaîne, donc si tu veux l’utiliser dans une clause SQL, pense à bien gérer les guillemets si c’est une date, une chaîne, ou autre type littéral.
+
+### 3.3 Redéfinir une variable depuis la ligne de commande
+
+Il est également possible de **surcharger une variable** depuis la ligne de commande avec l’option `--vars`, ce qui permet d’exécuter un modèle avec des paramètres différents sans avoir à modifier le fichier `dbt_project.yml`.
+
+Exemple :
+```bash
+dbt run --models transform_users_variable --vars '{date_limite: "2023-01-01"}'
+```
+
+Cela permet d’exécuter le modèle avec une autre date limite sans modifier le projet.
+
+### 3.4 Utilisation avancée : variables conditionnelles
+
+Tu peux aussi ajouter de la logique conditionnelle autour des variables dans ton modèle, par exemple :
+
+```sql
+{% set seuil_date = var("date_limite", "2020-01-01") %}
+
+SELECT 
+    id,
+    name,
+    created_at
+FROM {{ source('raw_data', 'users') }}
+WHERE created_at > '{{ seuil_date }}'
+```
+
+Ici, si la variable `date_limite` n'est pas fournie, elle prend la valeur par défaut `"2020-01-01"`.
+
+---  
+Grâce à l'utilisation des **variables**, tu rends tes modèles plus souples, dynamiques et adaptables à différents cas d'usage sans dupliquer du code ou modifier manuellement les fichiers sources.
+
+### 3.5 Définir dynamiquement un schéma ou un nom de table avec des variables
+
+DBT permet également de définir dynamiquement le **schéma** ou le **nom d'une table** en utilisant des variables dans les configurations des modèles. Cela peut être utile pour gérer plusieurs environnements (dev, prod, staging) ou projets en parallèle.
+
+#### Exemple : utiliser une variable pour le schéma de destination
+
+Tu peux définir une variable `target_schema` dans `dbt_project.yml` :
+```yaml
+vars:
+  target_schema: "dev_schema"
+```
+
+Puis, dans un modèle SQL, configurer le schéma cible avec cette variable :
+```sql
+-- models/transform_users_variable.sql
+{{ config(
+    schema=var("target_schema", "public")
+) }}
+
+SELECT
+    id,
+    name,
+    created_at
+FROM {{ source('raw_data', 'users') }}
+```
+
+Cela permettra à DBT de créer la table ou la vue dans le schéma `dev_schema`.
+
+#### Exemple : utiliser une variable pour le nom de table
+
+Tu peux également personnaliser dynamiquement le nom de la table cible :
+```sql
+-- models/transform_dynamic_table.sql
+{% set table_suffix = var("suffix", "default") %}
+
+{{ config(
+    alias="transform_users_" ~ table_suffix
+) }}
+
+SELECT
+    id,
+    name,
+    created_at
+FROM {{ source('raw_data', 'users') }}
+```
+
+Puis tu exécutes le modèle avec :
+```bash
+dbt run --models transform_dynamic_table --vars '{suffix: "2024"}'
+```
+
+Le modèle générera alors une table nommée `transform_users_2024`.
+
+---
+
+Avec cette approche, tu peux adapter dynamiquement les schémas, noms de table ou d'autres éléments en fonction du contexte ou des paramètres passés, ce qui rend tes projets DBT plus flexibles et facilement déployables dans différents environnements.
+
+## 4. Utiliser les macros dans DBT
+
+Les **macros** sont des blocs de code réutilisables écrits en Jinja, qui permettent de factoriser des portions SQL ou de la logique complexe dans tes projets DBT. Elles sont particulièrement utiles pour automatiser des tâches répétitives, encapsuler des règles métier ou générer dynamiquement des requêtes.
+
+### 4.1 Built-in macros (macros intégrées)
+
+DBT fournit un ensemble de **macros intégrées** prêtes à l’emploi. Ces macros couvrent des besoins courants comme l’accès à l’environnement, les chemins de dépendance ou la gestion du contexte.
+
+Voici quelques exemples utiles :
+
+- `{{ ref('model_name') }}` : fait référence à un autre modèle DBT.
+- `{{ source('schema', 'table') }}` : référence une source de données déclarée.
+- `{{ config(...) }}` : permet de configurer dynamiquement les paramètres d’un modèle.
+- `{{ this }}` : fait référence au modèle courant (nom complet `database.schema.table`).
+- `{{ target.name }}` : donne le nom de l’environnement (`dev`, `prod`, etc.).
+- `{{ run_started_at }}` : retourne la date/heure de début d'exécution du run DBT.
+
+### 4.2 Créer des custom macros
+
+Tu peux définir tes propres macros dans le dossier `macros/` de ton projet. Chaque fichier `.sql` peut contenir une ou plusieurs macros personnalisées.
+
+Exemple :
+
+```sql
+-- macros/format_date.sql
+{% macro format_date(column_name) %}
+    TO_CHAR({{ column_name }}, 'YYYY-MM-DD')
+{% endmacro %}
+```
+
+Et son utilisation dans un modèle :
+
+```sql
+SELECT
+    id,
+    name,
+    {{ format_date('created_at') }} AS created_at_formatted
+FROM {{ source('raw_data', 'users') }}
+```
+
+### 4.3 Utiliser des macros dans des boucles et conditions
+
+Jinja permet aussi d’utiliser des **structures de contrôle**, comme des boucles ou des conditions, dans les macros :
+
+#### Exemple avec boucle :
+
+```sql
+-- macros/select_columns.sql
+{% macro select_columns(columns) %}
+    {% for col in columns %}
+        {{ col }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+{% endmacro %}
+```
+
+Utilisation :
+
+```sql
+SELECT {{ select_columns(['id', 'name', 'created_at']) }}
+FROM {{ source('raw_data', 'users') }}
+```
+
+#### Exemple avec condition :
+
+```sql
+{% macro filter_by_env(column_name) %}
+    {% if target.name == 'prod' %}
+        {{ column_name }} IS NOT NULL
+    {% else %}
+        TRUE
+    {% endif %}
+{% endmacro %}
+```
+
+### 4.4 Le package `dbt_utils`
+
+Le package [**dbt_utils**](https://github.com/dbt-labs/dbt-utils) est une collection communautaire de macros prêtes à l’emploi pour accélérer le développement DBT. Il contient des fonctions utiles comme :
+
+- `dbt_utils.get_column_values()`
+- `dbt_utils.star()`
+- `dbt_utils.date_spine()`
+
+#### Installation de dbt_utils
+
+1. Dans le fichier `packages.yml` de ton projet, ajoute :
+
+```yaml
+packages:
+  - package: dbt-labs/dbt_utils
+    version: 1.1.1  # ou la dernière version stable
+```
+
+2. Exécute ensuite la commande :
+
+```bash
+dbt deps
+```
+
+Cela télécharge les packages dans le dossier `dbt_modules`.
+
+#### Exemple d'utilisation :
+
+```sql
+SELECT *
+FROM {{ dbt_utils.union_relations(relations=[ref('table1'), ref('table2')]) }}
+```
+
+---
+
+Les macros, qu'elles soient intégrées, personnalisées ou issues de packages comme `dbt_utils`, sont un outil puissant pour améliorer la réutilisabilité, la lisibilité et la maintenabilité de tes projets DBT.
+
+## 5. Les commandes utiles à DBT
 
 Voici les commandes utiles pour faire fonctionner **DBT** :
 
@@ -232,7 +502,11 @@ Pour vérifier que les tests fonctionnent, exécute : `dbt test`
 - Nettoyage des fichiers :
 Parfois, il est nécessaire de nettoyer les fichiers générés par **DBT**, surtout après une série d'exécutions ou lors de bugs. Tu peux le faire avec la commande : `dbt clean`
 
-## 4. Documentation DBT
+- Installation de packages :
+Pour utiliser des packages communs entre plusieurs projet, tu peux importer le fichier packages.yml dans le projet existant et utiliser la commande : `dbt deps`
+Cela rendra son utilisation possible. Il est donc également possible de télécharger des packages open sources, comme vu précédemment.  
+
+## 6. Documentation DBT
 
 DBT permet également de générer une documentation interactive pour ton projet, te permettant de visualiser les relations entre les modèles, sources, tests, etc.
 
@@ -264,4 +538,6 @@ Voici les sources qui ont été utilisées pour rédiger ce tutoriel :
 - La documentation officielle de [**DBT**](https://docs.getdbt.com/guides)  
 - Introduction à dbt : [L'outil de construction de données](https://www.youtube.com/watch?v=7ovpDjDJs6w)  
 - Introduction to dbt : [Step by Step Guide for Beginners](https://rasiksuhail.medium.com/introduction-to-dbt-step-by-step-instructions-for-beginners-a16d343c8826)  
-- La documentation de **Snowflake** : [Data Engineering with Snowpark Python and dbt](https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_and_dbt/index.html#0)  
+- La documentation de **Snowflake** : [Data Engineering with Snowpark Python and dbt](https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_and_dbt/index.html#0)
+- La documentation de **Pluralsight** (accès payant).
+
