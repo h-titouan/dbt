@@ -1,6 +1,6 @@
 # Tutoriel dbt (data build tool)
 
-[Image DBT](dbt_image.png)
+![Image DBT](dbt_image.png)
 
 ## Table des matières
 
